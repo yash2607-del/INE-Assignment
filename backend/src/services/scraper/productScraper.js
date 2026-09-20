@@ -137,8 +137,18 @@ export async function scrapeProductSingleAttempt(productId, options = {}) {
       timeout: 15000,
     });
 
-    // Check if storefront returned price error
-    const priceErrorEl = await page.$(SELECTORS.priceError);
+    // Check if storefront returned price error and attempt in-page "TRY AGAIN" click
+    let priceErrorEl = await page.$(SELECTORS.priceError);
+    if (priceErrorEl) {
+      console.log('[SCRAPE] Storefront returned transient challenge error. Attempting in-page "TRY AGAIN" click...');
+      const tryAgainBtn = await page.$(`${SELECTORS.priceError} button`);
+      if (tryAgainBtn) {
+        await tryAgainBtn.click();
+        await page.waitForSelector(SELECTORS.priceSuccess, { timeout: 6000 }).catch(() => {});
+        priceErrorEl = await page.$(SELECTORS.priceError);
+      }
+    }
+
     if (priceErrorEl) {
       const errorMsg = await page.$eval(SELECTORS.priceStatusText, (el) => el.textContent || '').catch(() => '');
       throw new ScraperError(`Storefront price loading failed: ${errorMsg}`, 'STORE_RESPONSE_ERROR');
