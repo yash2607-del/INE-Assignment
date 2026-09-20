@@ -227,4 +227,17 @@ export const trackingRepository = {
       .filter((l) => l.tracked_product_id === trackedProductId)
       .sort((a, b) => new Date(b.started_at) - new Date(a.started_at));
   },
+
+  /**
+   * Delete a tracked product by ID (for cleanup)
+   */
+  async deleteTrackedProduct(id) {
+    if (supabase) {
+      const { error } = await supabase.from('tracked_products').delete().eq('id', id);
+      if (error) throw new Error(`Supabase delete error: ${error.message}`);
+      return true;
+    }
+    inMemoryStore.trackedProducts.delete(id);
+    return true;
+  },
 };

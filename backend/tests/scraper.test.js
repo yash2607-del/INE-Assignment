@@ -63,5 +63,8 @@ describe('Data Integrity and Overwrite Prevention Tests', () => {
     // 5. Verify NO price_history record was created for the failed attempt
     const history = await trackingRepository.getPriceHistoryByProductId(initialProduct.id);
     assert.equal(history.length, 0);
+
+    // 6. Clean up temporary test product record
+    await trackingRepository.deleteTrackedProduct(initialProduct.id);
   });
 });
