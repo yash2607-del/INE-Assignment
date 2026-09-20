@@ -13,7 +13,7 @@ export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  * @param {Object} options - Custom options (maxRetries, baseDelayMs, onAttemptLog)
  */
 export async function withRetry(fn, options = {}) {
-  const maxRetries = options.maxRetries || config.scrapeMaxRetries;
+  const maxRetries = Math.min(options.maxRetries || config.scrapeMaxRetries, 3);
   const baseDelayMs = options.baseDelayMs || config.scrapeRetryBaseDelayMs;
   const onAttemptLog = options.onAttemptLog || (() => {});
 

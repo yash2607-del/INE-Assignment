@@ -153,6 +153,9 @@ export const trackingService = {
       const errorMsg = scrapeError ? scrapeError.message : 'Unknown scraper error';
       console.error(`[SCRAPE_FAILED] Honest log recorded for product "${product.product_name}": ${errorMsg}`);
 
+      const maxAttemptRecorded = scrapeError?.details?.attemptLogs?.reduce((max, log) => Math.max(max, log.attempt || 1), 1) || 3;
+      const attemptNum = Math.min(maxAttemptRecorded, 3);
+
       // Record honest failed scrape log
       const logRecord = await trackingRepository.insertScrapeLog({
         tracked_product_id: product.id,
@@ -160,7 +163,7 @@ export const trackingService = {
         started_at: startedAt,
         completed_at: completedAt,
         status: 'FAILED',
-        attempt_number: scrapeError?.details?.attemptLogs?.length || config.scrapeMaxRetries,
+        attempt_number: attemptNum,
         duration_ms: durationMs,
         error_message: errorMsg,
         extracted_price: null,
@@ -190,7 +193,7 @@ export const trackingService = {
       started_at: startedAt,
       completed_at: completedAt,
       status: finalStatus, // SUCCESS or RETRIED
-      attempt_number: attempts,
+      attempt_number: Math.min(attempts || 1, 3),
       duration_ms: durationMs,
       error_message: null,
       extracted_price: price,

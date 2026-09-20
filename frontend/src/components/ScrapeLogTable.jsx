@@ -37,7 +37,7 @@ export function ScrapeLogTable({ logs }) {
   return (
     <div>
       <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginTop: '24px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-        <History size={16} /> Scrape Attempt Logs (Honest Outcomes)
+        <History size={16} /> Scrape Attempt Logs 
       </h4>
 
       <table className="logs-table">
