@@ -127,9 +127,16 @@ export async function scrapeProductSingleAttempt(productId, options = {}) {
       throw new ScraperError('"Reveal price" button remained disabled or missing', 'REVEAL_BTN_DISABLED');
     }
 
-    // 5. Click "Reveal price" button
+    // 5. Click "Reveal price" button using physical mouse coordinates
     console.log('[SCRAPE] Clicking "Reveal price" button...');
-    await revealBtn.click();
+    const btnBox = await revealBtn.boundingBox();
+    if (btnBox) {
+      await page.mouse.move(btnBox.x + btnBox.width / 2, btnBox.y + btnBox.height / 2);
+      await delay(100);
+      await page.mouse.click(btnBox.x + btnBox.width / 2, btnBox.y + btnBox.height / 2);
+    } else {
+      await revealBtn.click();
+    }
 
     // 6. Wait for price success state (.price-block.price-success)
     console.log('[SCRAPE] Waiting for price and stock extraction elements...');

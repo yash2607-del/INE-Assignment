@@ -28,11 +28,12 @@ describe('Price and Stock Validation Unit Tests', () => {
 
 describe('Data Integrity and Overwrite Prevention Tests', () => {
   test('Failed scrape does NOT overwrite last known good price or create price history record', async () => {
+    const testExtId = 9000 + Math.floor(Math.random() * 900);
     // 1. Create a mock tracked product with an existing valid price
     const initialProduct = await trackingRepository.createTrackedProduct({
-      external_product_id: 9999,
+      external_product_id: testExtId,
       product_name: 'Test Integrity Phone',
-      product_url: 'https://demo.inelabteamdev.com/product/9999',
+      product_url: `https://demo.inelabteamdev.com/product/${testExtId}`,
       current_price: 15000,
       current_stock: 8,
     });
