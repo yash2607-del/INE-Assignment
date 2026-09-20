@@ -1,0 +1,11 @@
+{
+  "name": "ine-product-price-tracker-monorepo",
+  "version": "1.0.0",
+  "description": "INE Product Price Tracker Monorepo",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "test": "npm --prefix backend run test",
+    "scrape:headed": "npm --prefix backend run scrape:headed --"
+  }
+}
